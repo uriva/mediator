@@ -1,4 +1,5 @@
 import { setPrompt, setCustomTools } from "@prompt2bot/client";
+import { init } from "@instantdb/admin";
 import { BASE_MEDIATOR_PROMPT } from "../src/lib/mediator-prompt.ts";
 import { getMediatorTools } from "../src/lib/mediator-tools.ts";
 
@@ -7,14 +8,31 @@ const apiToken =
   process.env.PROMPT2BOT_API_TOKEN || "p2b_95a4a7fd33ae84a54a2cb205c491675409d6a54a";
 const botId =
   process.env.PROMPT2BOT_BOT_ID || "81660ef7-d43a-4c71-844a-aa34cfe4e99e";
-const secret =
-  process.env.PROMPT2BOT_SECRET || "0ca19ee2-1114-44ed-9014-56b2b8bef649";
+const p2bInstantAdminToken =
+  process.env.P2B_INSTANT_ADMIN_TOKEN || "2340dc79-f1a9-4f7f-b368-fe1d1c8fd5a9";
 
 async function main() {
   console.log(`[register-agent] Target bot: ${botId}`);
   console.log(`[register-agent] Base URL: ${baseUrl}`);
 
-  // 1. Update Base Prompt
+  // 1. Ensure Bot Group Chat Behavior is set to "always" (so it responds to all group messages)
+  try {
+    const p2bDb = init({
+      appId: "4633a4fd-b3f6-4d8c-b11b-a953e63c4cee",
+      adminToken: p2bInstantAdminToken,
+    });
+    await p2bDb.transact([
+      p2bDb.tx.bots[botId].update({
+        groupChatBehavior: "always",
+        name: "Mediator",
+      }),
+    ]);
+    console.log("[register-agent] ✓ Ensured groupChatBehavior is set to 'always'");
+  } catch (err) {
+    console.warn("[register-agent] Could not update bot groupChatBehavior in InstantDB:", err);
+  }
+
+  // 2. Update Base Prompt
   console.log("[register-agent] Updating bot default prompt...");
   const promptRes = await setPrompt({
     apiToken,
@@ -28,7 +46,7 @@ async function main() {
   }
   console.log("[register-agent] ✓ Bot prompt updated successfully.");
 
-  // 2. Register Custom Tools & remote_config
+  // 3. Register Custom Tools & remote_config
   const tools = getMediatorTools(baseUrl);
   console.log(
     `[register-agent] Registering ${tools.length} tools: ${tools

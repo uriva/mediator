@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Serene Zen stones balance icon symbolizing mediation and harmony -->
+  <defs>
+    <linearGradient id="sageGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4A6B5D" />
+      <stop offset="100%" stop-color="#2D463B" />
+    </linearGradient>
+    <linearGradient id="sandGrad" x1="16" y1="20" x2="48" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D9D2C7" />
+      <stop offset="100%" stop-color="#BAAF9E" />
+    </linearGradient>
+    <linearGradient id="warmGrad" x1="20" y1="8" x2="44" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8EA89D" />
+      <stop offset="100%" stop-color="#5E7D70" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle with soft ambient glow -->
+  <circle cx="32" cy="32" r="30" fill="#F4F2ED" stroke="#E2DDD5" stroke-width="1.5" />
+  
+  <!-- Base Stone (Foundation of Truth) -->
+  <ellipse cx="32" cy="46" rx="20" ry="6.5" fill="url(#sageGrad)" />
+  <ellipse cx="30" cy="44.5" rx="17" ry="4.5" fill="#587A6C" opacity="0.4" />
+  
+  <!-- Middle Stone (Mutual Agreement) -->
+  <ellipse cx="32" cy="33" rx="14" ry="5.5" fill="url(#sandGrad)" />
+  <ellipse cx="31" cy="32" rx="11" ry="3.5" fill="#E8E3DA" opacity="0.6" />
+  
+  <!-- Top Stone (Harmonious Resolution) -->
+  <ellipse cx="32" cy="21" rx="8.5" ry="4.5" fill="url(#warmGrad)" />
+  <ellipse cx="31" cy="20" rx="6" ry="2.5" fill="#A8C1B6" opacity="0.7" />
+  
+  <!-- Subtle Zen balance beam / gentle halo -->
+  <circle cx="32" cy="11" r="2" fill="#D4AF37" opacity="0.75" />
+</svg>

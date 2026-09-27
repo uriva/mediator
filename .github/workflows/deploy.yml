@@ -1,0 +1,33 @@
+name: Deploy & Sync Agent
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: 2.9.5
+
+      - name: Deploy to Deno Deploy
+        run: deno deploy --prod --allow-node-modules
+        env:
+          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
+
+      - name: Register Tools & Remote Config to Prompt2Bot
+        run: deno run -A scripts/register-agent.ts
+        env:
+          PROMPT2BOT_API_TOKEN: ${{ secrets.PROMPT2BOT_API_TOKEN || 'p2b_95a4a7fd33ae84a54a2cb205c491675409d6a54a' }}
+          PROMPT2BOT_BOT_ID: ${{ secrets.PROMPT2BOT_BOT_ID || '81660ef7-d43a-4c71-844a-aa34cfe4e99e' }}
+          BASE_URL: https://mediator.deno.dev

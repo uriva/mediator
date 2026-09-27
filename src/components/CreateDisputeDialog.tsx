@@ -33,6 +33,7 @@ export function CreateDisputeDialog({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,12 +45,13 @@ export function CreateDisputeDialog({
     const name = creatorName.trim() || user?.email?.split("@")[0] || "Initiator";
 
     setLoading(true);
-    const toastId = toast.loading("Creating mediation room...");
+    setLoadingStep("Generating secure end-to-end encryption keys...");
 
     try {
       // 1. Ensure user has an Alice & Bot identity
       const credentials = await ensureAliceIdentity(name);
 
+      setLoadingStep("Provisioning private mediation chamber...");
       // 2. Create encrypted Alice & Bot conversation with Mediator Bot
       const convResult = await createDisputeConversation({
         title: title.trim(),
@@ -64,6 +66,7 @@ export function CreateDisputeDialog({
         );
       }
 
+      setLoadingStep("Recording dispute onto ledger...");
       const conversationId = convResult.conversationId;
       const disputeId = id();
       const participantId = id();
@@ -98,13 +101,13 @@ export function CreateDisputeDialog({
       ]);
 
       saveLocalDisputeId(disputeId);
-      toast.success("Mediation room created", { id: toastId });
+      setLoadingStep("Entering your mediation room...");
+      toast.success("Mediation room created");
       onOpenChange(false);
       router.push(`/dispute/${disputeId}`);
     } catch (err: any) {
       console.error("Failed to create dispute:", err);
-      toast.error(err?.message || "Could not establish dispute", { id: toastId });
-    } finally {
+      toast.error(err?.message || "Could not establish dispute");
       setLoading(false);
     }
   };
@@ -121,62 +124,83 @@ export function CreateDisputeDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-3.5 pt-2">
-          {/* Your Name */}
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-foreground/80">
-              Your name
-            </label>
-            <Input
-              type="text"
-              placeholder="Your name"
-              value={creatorName}
-              onChange={(e) => setCreatorName(e.target.value)}
-              className="rounded-xl h-10 border-border/80 text-sm focus-visible:ring-primary"
-              required
-            />
+        {loading ? (
+          <div className="py-12 px-4 flex flex-col items-center justify-center text-center space-y-4">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mx-auto">
+                <div className="w-7 h-7 border-2.5 border-primary border-t-transparent rounded-full animate-spin" />
+              </div>
+            </div>
+            <div className="space-y-1.5 max-w-xs mx-auto">
+              <h3 className="font-serif font-bold text-lg text-foreground">
+                Setting Up Neutral Chamber
+              </h3>
+              <p className="text-xs text-primary font-medium animate-pulse">
+                {loadingStep || "Preparing your private mediation room..."}
+              </p>
+              <p className="text-[11px] text-muted-foreground pt-1">
+                Generating end-to-end encryption keys and establishing private record.
+              </p>
+            </div>
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-3.5 pt-2">
+            {/* Your Name */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground/80">
+                Your name
+              </label>
+              <Input
+                type="text"
+                placeholder="Your name"
+                value={creatorName}
+                onChange={(e) => setCreatorName(e.target.value)}
+                className="rounded-xl h-10 border-border/80 text-sm focus-visible:ring-primary"
+                required
+              />
+            </div>
 
-          {/* Title */}
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-foreground/80">
-              Title
-            </label>
-            <Input
-              type="text"
-              placeholder="Dispute title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="rounded-xl h-10 border-border/80 text-sm focus-visible:ring-primary"
-              required
-            />
-          </div>
+            {/* Title */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground/80">
+                Title
+              </label>
+              <Input
+                type="text"
+                placeholder="Dispute title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="rounded-xl h-10 border-border/80 text-sm focus-visible:ring-primary"
+                required
+              />
+            </div>
 
-          {/* Description */}
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-foreground/80">
-              Description
-            </label>
-            <Textarea
-              rows={4}
-              placeholder="Describe the situation and desired outcome..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="rounded-xl border-border/80 text-sm resize-none focus-visible:ring-primary p-3"
-              required
-            />
-          </div>
+            {/* Description */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground/80">
+                Description
+              </label>
+              <Textarea
+                rows={4}
+                placeholder="Describe the situation and desired outcome..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="rounded-xl border-border/80 text-sm resize-none focus-visible:ring-primary p-3"
+                required
+              />
+            </div>
 
-          <div className="pt-2">
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm transition-all"
-            >
-              {loading ? "Creating Room..." : "Create Mediation Room"}
-            </Button>
-          </div>
-        </form>
+            <div className="pt-2">
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm transition-all"
+              >
+                Create Mediation Room
+              </Button>
+            </div>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );

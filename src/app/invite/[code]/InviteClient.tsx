@@ -33,6 +33,7 @@ export default function InviteClient({ inviteCode }: InviteClientProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState("");
   const [authOpen, setAuthOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
@@ -54,12 +55,13 @@ export default function InviteClient({ inviteCode }: InviteClientProps) {
     const participantEmail = email.trim() || user?.email || undefined;
 
     setLoading(true);
-    const toastId = toast.loading("Connecting you to the mediation chamber...");
+    setLoadingStep("Generating secure encryption keys...");
 
     try {
       // 1. Establish Alice & Bot keypair for this participant
       const credentials = await ensureAliceIdentity(participantName);
 
+      setLoadingStep("Connecting to multi-party room...");
       // 2. Collect all participants' publicSignKeys
       const existingKeys = (dispute.participants || [])
         .map((p: any) => p.publicSignKey)
@@ -81,6 +83,7 @@ export default function InviteClient({ inviteCode }: InviteClientProps) {
         console.warn("Could not re-key conversation upon join:", e);
       }
 
+      setLoadingStep("Recording attendance in room...");
       // 4. Check if participant already recorded
       const alreadyJoined = (dispute.participants || []).some(
         (p: any) =>
@@ -120,12 +123,12 @@ export default function InviteClient({ inviteCode }: InviteClientProps) {
       await transact(updates);
 
       saveLocalDisputeId(dispute.id);
-      toast.success("Welcome to the mediation room", { id: toastId });
+      setLoadingStep("Entering mediation chamber...");
+      toast.success("Welcome to the mediation room");
       router.push(`/dispute/${dispute.id}`);
     } catch (err: any) {
       console.error("Failed to join mediation:", err);
-      toast.error(err?.message || "Could not join session", { id: toastId });
-    } finally {
+      toast.error(err?.message || "Could not join session");
       setLoading(false);
     }
   };
@@ -226,47 +229,68 @@ export default function InviteClient({ inviteCode }: InviteClientProps) {
             </div>
           </div>
 
-          {/* Join Form */}
-          <form onSubmit={handleJoin} className="space-y-4 pt-1">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground/80 tracking-wide">
-                Your name
-              </label>
-              <Input
-                type="text"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="rounded-xl h-11 border-border/80 text-sm focus-visible:ring-primary"
-                required
-              />
+          {/* Join Form or Loading Spinner */}
+          {loading ? (
+            <div className="py-10 px-4 flex flex-col items-center justify-center text-center space-y-4">
+              <div className="relative">
+                <div className="w-16 h-16 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mx-auto">
+                  <div className="w-7 h-7 border-2.5 border-primary border-t-transparent rounded-full animate-spin" />
+                </div>
+              </div>
+              <div className="space-y-1.5 max-w-xs mx-auto">
+                <h3 className="font-serif font-bold text-lg text-foreground">
+                  Entering Mediation Chamber
+                </h3>
+                <p className="text-xs text-primary font-medium animate-pulse">
+                  {loadingStep || "Connecting to secure session..."}
+                </p>
+                <p className="text-[11px] text-muted-foreground pt-1">
+                  Exchanging encryption keys with the other party and the AI Mediator.
+                </p>
+              </div>
             </div>
+          ) : (
+            <form onSubmit={handleJoin} className="space-y-4 pt-1">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground/80 tracking-wide">
+                  Your name
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="rounded-xl h-11 border-border/80 text-sm focus-visible:ring-primary"
+                  required
+                />
+              </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground/80 tracking-wide flex items-center justify-between">
-                <span>Email Address (Optional)</span>
-                <span className="text-[11px] text-muted-foreground font-normal">
-                  To receive settlement updates
-                </span>
-              </label>
-              <Input
-                type="email"
-                placeholder="your.email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="rounded-xl h-11 border-border/80 text-sm focus-visible:ring-primary"
-              />
-            </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground/80 tracking-wide flex items-center justify-between">
+                  <span>Email Address (Optional)</span>
+                  <span className="text-[11px] text-muted-foreground font-normal">
+                    To receive settlement updates
+                  </span>
+                </label>
+                <Input
+                  type="email"
+                  placeholder="your.email@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="rounded-xl h-11 border-border/80 text-sm focus-visible:ring-primary"
+                />
+              </div>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm transition-all gap-2 shadow-xs"
-            >
-              <span>{loading ? "Entering Chamber..." : "Enter Mediation Room"}</span>
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </form>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm transition-all gap-2 shadow-xs"
+              >
+                <span>Enter Mediation Room</span>
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </form>
+          )}
         </div>
       </main>
 

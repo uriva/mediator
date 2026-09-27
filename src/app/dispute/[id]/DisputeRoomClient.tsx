@@ -134,11 +134,16 @@ export default function DisputeRoomClient({ disputeId }: DisputeRoomClientProps)
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Navbar onOpenAuth={() => setAuthOpen(true)} />
-        <div className="flex-1 flex flex-col items-center justify-center gap-3">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs text-muted-foreground font-medium">
-            Entering mediation chamber...
-          </p>
+        <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-4">
+          <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin text-primary" />
+          <div className="text-center space-y-1">
+            <h3 className="font-serif font-bold text-lg text-foreground">
+              Entering Mediation Chamber
+            </h3>
+            <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+              Connecting to secure cryptographic records and verified ledger...
+            </p>
+          </div>
         </div>
       </div>
     );

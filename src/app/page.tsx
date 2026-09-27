@@ -32,9 +32,11 @@ export default function HomePage() {
   const [authOpen, setAuthOpen] = useState(false);
   const [joinCode, setJoinCode] = useState("");
   const [localDisputeIds, setLocalDisputeIds] = useState<string[]>([]);
+  const [isLocalLoaded, setIsLocalLoaded] = useState(false);
 
   useEffect(() => {
     setLocalDisputeIds(getLocalDisputeIds());
+    setIsLocalLoaded(true);
   }, []);
 
   // Query disputes
@@ -62,6 +64,8 @@ export default function HomePage() {
     }
     return false;
   });
+
+  const isWaiting = isLoading || !isLocalLoaded;
 
   const handleJoinWithCode = (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,16 +169,22 @@ export default function HomePage() {
             )}
           </div>
 
-          {isLoading ? (
+          {isWaiting ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-44 rounded-2xl bg-card/60 border border-border/60 p-6 animate-pulse space-y-3"
+                  className="h-44 rounded-2xl bg-card/60 border border-border/60 p-6 flex flex-col justify-between"
                 >
-                  <div className="w-24 h-4 bg-muted rounded-md" />
-                  <div className="w-3/4 h-6 bg-muted rounded-md" />
-                  <div className="w-full h-12 bg-muted/60 rounded-md" />
+                  <div className="space-y-2">
+                    <div className="w-20 h-4 bg-muted animate-pulse rounded-md" />
+                    <div className="w-3/4 h-5 bg-muted animate-pulse rounded-md" />
+                    <div className="w-full h-8 bg-muted/50 animate-pulse rounded-md mt-2" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                    <span className="text-[11px] text-muted-foreground">Loading session...</span>
+                  </div>
                 </div>
               ))}
             </div>

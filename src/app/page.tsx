@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth, useQuery } from "@/lib/instant";
+import { getLocalDisputeIds } from "@/lib/dispute-storage";
 import { Navbar } from "@/components/Navbar";
 import { CreateDisputeDialog } from "@/components/CreateDisputeDialog";
 import { AuthDialog } from "@/components/AuthDialog";
@@ -30,6 +31,11 @@ export default function HomePage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [joinCode, setJoinCode] = useState("");
+  const [localDisputeIds, setLocalDisputeIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    setLocalDisputeIds(getLocalDisputeIds());
+  }, []);
 
   // Query disputes
   const { data, isLoading } = useQuery({
@@ -42,14 +48,20 @@ export default function HomePage() {
 
   const disputes = (data?.disputes || []) as any[];
 
-  // Filter for user disputes or show recent
-  const myDisputes = user
-    ? disputes.filter(
-        (d) =>
-          d.creatorEmail === user.email ||
-          d.participants?.some((p: any) => p.email === user.email)
-      )
-    : disputes.slice(0, 4);
+  // Strict privacy filter: ONLY show disputes the current user is part of or created
+  const myDisputes = disputes.filter((d) => {
+    if (
+      user?.email &&
+      (d.creatorEmail === user.email ||
+        d.participants?.some((p: any) => p.email === user.email))
+    ) {
+      return true;
+    }
+    if (localDisputeIds.includes(d.id)) {
+      return true;
+    }
+    return false;
+  });
 
   const handleJoinWithCode = (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,15 +146,13 @@ export default function HomePage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="font-serif text-2xl font-bold text-foreground">
-                {user ? "Your Mediation Sessions" : "Active Mediation Rooms"}
+                Your Mediation Sessions
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground">
-                {user
-                  ? "Track ongoing deliberations and signed resolution agreements."
-                  : "Explore active rooms or sign in to track your personal disputes."}
+                All mediations are confidential. Only parties with an invitation can view or participate.
               </p>
             </div>
-            {disputes.length > 0 && (
+            {myDisputes.length > 0 && (
               <Button
                 variant="ghost"
                 size="sm"

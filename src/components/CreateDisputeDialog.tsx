@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth, transact, tx, id } from "@/lib/instant";
 import { ensureAliceIdentity, createDisputeConversation } from "@/lib/alice-and-bot";
+import { saveLocalDisputeId } from "@/lib/dispute-storage";
 import {
   Dialog,
   DialogContent,
@@ -15,16 +16,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Sparkles, FileText, User, HelpCircle } from "lucide-react";
-
-const CATEGORIES = [
-  { value: "financial", label: "Financial / Debt / Loan" },
-  { value: "housing", label: "Rental / Tenancy / Property" },
-  { value: "workplace", label: "Workplace / Freelance / Contract" },
-  { value: "services", label: "Goods / Services / Deliverables" },
-  { value: "personal", label: "Interpersonal / Family / Community" },
-  { value: "other", label: "Other Dispute" },
-];
 
 interface CreateDisputeDialogProps {
   open: boolean;
@@ -38,29 +29,28 @@ export function CreateDisputeDialog({
   const router = useRouter();
   const { user } = useAuth();
 
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("financial");
   const [creatorName, setCreatorName] = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !description.trim()) {
-      toast.error("Please provide both a title and summary of the dispute");
+      toast.error("Please provide both a title and description");
       return;
     }
 
     const name = creatorName.trim() || user?.email?.split("@")[0] || "Initiator";
 
     setLoading(true);
-    const toastId = toast.loading("Establishing secure mediation room...");
+    const toastId = toast.loading("Creating mediation room...");
 
     try {
-      // 1. Ensure client has an Alice & Bot keypair
+      // 1. Ensure user has an Alice & Bot identity
       const credentials = await ensureAliceIdentity(name);
 
-      // 2. Create encrypted Alice & Bot conversation with the Mediator Bot
+      // 2. Create encrypted Alice & Bot conversation with Mediator Bot
       const convResult = await createDisputeConversation({
         title: title.trim(),
         participantKeys: [credentials.publicSignKey],
@@ -85,7 +75,7 @@ export function CreateDisputeDialog({
         tx.disputes[disputeId].create({
           title: title.trim(),
           description: description.trim(),
-          category,
+          category: "General",
           status: "intake",
           conversationId,
           inviteCode,
@@ -107,7 +97,8 @@ export function CreateDisputeDialog({
           .link({ dispute: disputeId }),
       ]);
 
-      toast.success("Mediation room established", { id: toastId });
+      saveLocalDisputeId(disputeId);
+      toast.success("Mediation room created", { id: toastId });
       onOpenChange(false);
       router.push(`/dispute/${disputeId}`);
     } catch (err: any) {
@@ -120,77 +111,55 @@ export function CreateDisputeDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg rounded-2xl p-6 sm:p-8 bg-card border-border/70 shadow-xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="space-y-1.5">
-          <div className="flex items-center gap-2 text-primary font-serif font-semibold text-sm">
-            <span className="text-lg">🌿</span> Step into Neutral Ground
-          </div>
+      <DialogContent className="sm:max-w-md rounded-2xl p-6 sm:p-7 bg-card border-border/70 shadow-xl">
+        <DialogHeader className="space-y-1">
           <DialogTitle className="font-serif text-2xl font-bold text-foreground">
             Initiate a Mediation
           </DialogTitle>
-          <DialogDescription className="text-xs sm:text-sm text-muted-foreground">
-            Provide the initial context. Once created, you will receive a private invite link to bring the other party into the room.
+          <DialogDescription className="text-xs text-muted-foreground">
+            Start a structured, private mediation room.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-          {/* Dispute Title */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-foreground/80 tracking-wide flex items-center justify-between">
-              <span>Dispute Subject / Headline</span>
-              <span className="text-[11px] text-muted-foreground font-normal">e.g. Deposit return, Unpaid invoice</span>
+        <form onSubmit={handleSubmit} className="space-y-3.5 pt-2">
+          {/* Your Name */}
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-foreground/80">
+              Your name
             </label>
             <Input
               type="text"
-              placeholder="e.g., Security Deposit Return for Apt 3B"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="rounded-xl h-11 border-border/80 text-sm focus-visible:ring-primary"
+              placeholder="Your name"
+              value={creatorName}
+              onChange={(e) => setCreatorName(e.target.value)}
+              className="rounded-xl h-10 border-border/80 text-sm focus-visible:ring-primary"
               required
             />
           </div>
 
-          {/* Category */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-foreground/80 tracking-wide">
-              Category
-            </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full h-11 rounded-xl border border-border/80 bg-background px-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary"
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Your Name */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-foreground/80 tracking-wide">
-              Your Name / Title
+          {/* Title */}
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-foreground/80">
+              Title
             </label>
             <Input
               type="text"
-              placeholder="e.g., Jordan Miller (Tenant)"
-              value={creatorName}
-              onChange={(e) => setCreatorName(e.target.value)}
-              className="rounded-xl h-11 border-border/80 text-sm focus-visible:ring-primary"
+              placeholder="Dispute title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="rounded-xl h-10 border-border/80 text-sm focus-visible:ring-primary"
+              required
             />
           </div>
 
-          {/* Situation Description */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-foreground/80 tracking-wide flex items-center justify-between">
-              <span>Overview & Desired Resolution</span>
-              <span className="text-[11px] text-muted-foreground font-normal">State the main points calmly</span>
+          {/* Description */}
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-foreground/80">
+              Description
             </label>
             <Textarea
               rows={4}
-              placeholder="Briefly describe the key events, amounts or agreements involved, and what fair outcome you are hoping to reach..."
+              placeholder="Describe the situation and desired outcome..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="rounded-xl border-border/80 text-sm resize-none focus-visible:ring-primary p-3"
@@ -202,13 +171,10 @@ export function CreateDisputeDialog({
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm transition-all shadow-xs"
+              className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm transition-all"
             >
-              {loading ? "Creating Mediation Room..." : "Create & Enter Room"}
+              {loading ? "Creating Room..." : "Create Mediation Room"}
             </Button>
-            <p className="text-[11px] text-center text-muted-foreground mt-2">
-              The AI Mediator will welcome both parties and only record facts agreed upon by all sides.
-            </p>
           </div>
         </form>
       </DialogContent>

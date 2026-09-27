@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useAuth, useQuery } from "@/lib/instant";
+import { useAuth, useQuery, transact, tx } from "@/lib/instant";
 import {
   ensureAliceIdentity,
   type Credentials,
   loadLocalCredentials,
+  createDisputeConversation,
 } from "@/lib/alice-and-bot";
+import { saveLocalDisputeId } from "@/lib/dispute-storage";
 import { Navbar } from "@/components/Navbar";
 import { ShareDialog } from "@/components/ShareDialog";
 import { SubmitEvidenceDialog } from "@/components/SubmitEvidenceDialog";
@@ -74,6 +76,13 @@ export default function DisputeRoomClient({ disputeId }: DisputeRoomClientProps)
 
   const dispute = data?.disputes?.[0] as any;
 
+  // Save dispute ID to private local storage
+  useEffect(() => {
+    if (disputeId) {
+      saveLocalDisputeId(disputeId);
+    }
+  }, [disputeId]);
+
   // Initialize Alice & Bot credentials
   useEffect(() => {
     if (!credentials) {
@@ -83,6 +92,43 @@ export default function DisputeRoomClient({ disputeId }: DisputeRoomClientProps)
       ensureAliceIdentity(defaultName).then((c) => setCredentials(c));
     }
   }, [credentials, user]);
+
+  const isAllPartiesJoined = (dispute?.participants || []).length >= 2;
+
+  // Auto-provision or recover multi-party conversation once all parties join
+  useEffect(() => {
+    if (
+      isAllPartiesJoined &&
+      credentials &&
+      dispute &&
+      !dispute.conversationId
+    ) {
+      const allKeys = (dispute.participants || [])
+        .map((p: any) => p.publicSignKey)
+        .filter(Boolean);
+      const combined = Array.from(
+        new Set([...allKeys, credentials.publicSignKey])
+      );
+
+      createDisputeConversation({
+        title: dispute.title,
+        participantKeys: combined,
+        credentials,
+      })
+        .then((res) => {
+          if ("conversationId" in res && res.conversationId) {
+            transact([
+              tx.disputes[dispute.id].update({
+                conversationId: res.conversationId,
+                status: "in_mediation",
+                updatedAt: Date.now(),
+              }),
+            ]);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [isAllPartiesJoined, credentials, dispute?.conversationId]);
 
   if (isLoading) {
     return (
@@ -214,7 +260,68 @@ export default function DisputeRoomClient({ disputeId }: DisputeRoomClientProps)
             </div>
           </div>
 
-          {credentials && dispute.conversationId ? (
+          {!isAllPartiesJoined ? (
+            <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 bg-card rounded-2xl border border-border/70 text-center space-y-6 shadow-xs min-h-[460px]">
+              <div className="relative">
+                <div className="w-16 h-16 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center text-3xl mx-auto text-primary">
+                  ⚖️
+                </div>
+                <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-primary"></span>
+                </span>
+              </div>
+
+              <div className="space-y-1.5 max-w-md">
+                <Badge variant="outline" className="text-[10px] font-semibold tracking-wider uppercase border-primary/30 text-primary bg-primary/5">
+                  Awaiting All Parties
+                </Badge>
+                <h3 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+                  Mediation Begins When Both Parties Join
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
+                  To ensure strict neutrality, the AI Mediator does not open the group chat until both parties are present in the room.
+                </p>
+              </div>
+
+              {/* Room Presence Card */}
+              <div className="w-full max-w-sm p-4 rounded-xl bg-muted/40 border border-border/60 text-left space-y-2.5">
+                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
+                  Room Presence
+                </span>
+                <div className="space-y-2 text-xs">
+                  {participants.map((p: any, idx: number) => (
+                    <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-card border border-border/60">
+                      <span className="font-semibold text-foreground">{p.name}</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1 text-[11px]">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Present in Room
+                      </span>
+                    </div>
+                  ))}
+                  <div className="flex items-center justify-between p-2.5 rounded-lg border border-dashed border-border/80 text-muted-foreground bg-muted/20">
+                    <span className="italic">Counterpart / Respondent</span>
+                    <span className="text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1.5 text-[11px]">
+                      <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" /> Pending
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Invite Actions */}
+              <div className="space-y-2.5 w-full max-w-sm">
+                <Button
+                  onClick={() => setShareOpen(true)}
+                  className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-medium gap-2 shadow-xs"
+                >
+                  <Share2 className="w-4 h-4" />
+                  Invite Counterpart to Room
+                </Button>
+                <p className="text-[11px] text-muted-foreground">
+                  The chat will automatically unlock the second they open the invite link.
+                </p>
+              </div>
+            </div>
+          ) : credentials && dispute.conversationId ? (
             <AliceChat
               conversationId={dispute.conversationId}
               credentials={credentials}
@@ -223,7 +330,7 @@ export default function DisputeRoomClient({ disputeId }: DisputeRoomClientProps)
             <div className="flex-1 flex flex-col items-center justify-center p-8 bg-card rounded-2xl border border-border/70 text-center space-y-3">
               <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               <p className="text-xs text-muted-foreground">
-                Initializing encrypted session keys...
+                Initializing encrypted multi-party session...
               </p>
             </div>
           )}

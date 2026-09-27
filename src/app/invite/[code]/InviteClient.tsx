@@ -4,7 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth, useQuery, transact, tx, id } from "@/lib/instant";
-import { ensureAliceIdentity } from "@/lib/alice-and-bot";
+import { ensureAliceIdentity, createDisputeConversation } from "@/lib/alice-and-bot";
+import { saveLocalDisputeId } from "@/lib/dispute-storage";
 import { Navbar } from "@/components/Navbar";
 import { AuthDialog } from "@/components/AuthDialog";
 import { Button } from "@/components/ui/button";
@@ -59,34 +60,66 @@ export default function InviteClient({ inviteCode }: InviteClientProps) {
       // 1. Establish Alice & Bot keypair for this participant
       const credentials = await ensureAliceIdentity(participantName);
 
-      // 2. Check if participant already recorded
+      // 2. Collect all participants' publicSignKeys
+      const existingKeys = (dispute.participants || [])
+        .map((p: any) => p.publicSignKey)
+        .filter(Boolean);
+      const allKeys = Array.from(new Set([...existingKeys, credentials.publicSignKey]));
+
+      // 3. Provision or update multi-party conversation with both parties & bot
+      let conversationId = dispute.conversationId;
+      try {
+        const convRes = await createDisputeConversation({
+          title: dispute.title,
+          participantKeys: allKeys,
+          credentials,
+        });
+        if ("conversationId" in convRes && convRes.conversationId) {
+          conversationId = convRes.conversationId;
+        }
+      } catch (e) {
+        console.warn("Could not re-key conversation upon join:", e);
+      }
+
+      // 4. Check if participant already recorded
       const alreadyJoined = (dispute.participants || []).some(
         (p: any) =>
           (participantEmail && p.email === participantEmail) ||
           p.publicSignKey === credentials.publicSignKey
       );
 
-      if (!alreadyJoined) {
-        const participantId = id();
-        await transact([
-          tx.disputeParticipants[participantId]
-            .create({
-              disputeId: dispute.id,
-              userId: user?.id || undefined,
-              email: participantEmail,
-              name: participantName,
-              role: "respondent",
-              publicSignKey: credentials.publicSignKey,
-              joinedAt: Date.now(),
-            })
-            .link({ dispute: dispute.id }),
-          tx.disputes[dispute.id].update({
-            status: "in_mediation",
-            updatedAt: Date.now(),
-          }),
-        ]);
-      }
+      const now = Date.now();
+      const participantId = id();
+      const updates = alreadyJoined
+        ? [
+            tx.disputes[dispute.id].update({
+              status: "in_mediation",
+              conversationId,
+              updatedAt: now,
+            }),
+          ]
+        : [
+            tx.disputes[dispute.id].update({
+              status: "in_mediation",
+              conversationId,
+              updatedAt: now,
+            }),
+            tx.disputeParticipants[participantId]
+              .create({
+                disputeId: dispute.id,
+                userId: user?.id || undefined,
+                email: participantEmail,
+                name: participantName,
+                role: "respondent",
+                publicSignKey: credentials.publicSignKey,
+                joinedAt: now,
+              })
+              .link({ dispute: dispute.id }),
+          ];
 
+      await transact(updates);
+
+      saveLocalDisputeId(dispute.id);
       toast.success("Welcome to the mediation room", { id: toastId });
       router.push(`/dispute/${dispute.id}`);
     } catch (err: any) {
@@ -197,11 +230,11 @@ export default function InviteClient({ inviteCode }: InviteClientProps) {
           <form onSubmit={handleJoin} className="space-y-4 pt-1">
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-foreground/80 tracking-wide">
-                Your Full Name / Title
+                Your name
               </label>
               <Input
                 type="text"
-                placeholder="e.g. Alex Rivera (Landlord / Contractor)"
+                placeholder="Your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="rounded-xl h-11 border-border/80 text-sm focus-visible:ring-primary"

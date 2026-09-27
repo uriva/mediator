@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -21,7 +22,7 @@ jobs:
           deno-version: 2.9.5
 
       - name: Deploy to Deno Deploy
-        run: deno deploy --prod --allow-node-modules
+        run: deno deploy --prod --token ${{ secrets.DENO_DEPLOY_TOKEN }} --allow-node-modules
         env:
           DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
 

@@ -125,7 +125,7 @@ export default async function Image() {
               fontWeight: 700,
             }}
           >
-            mediator.deno.dev
+            mediator.uriva.deno.net
           </span>
         </div>
       </div>

@@ -22,7 +22,7 @@ export async function generateMetadata({
       const dispute = disputes[0] as any;
       const title = `Mediation: ${dispute.title}`;
       const description = `Join the impartial mediation session for "${dispute.title}". View established facts, submit evidence, and reach a peaceful accord.`;
-      const ogUrl = `https://mediator.deno.dev/api/og?title=${encodeURIComponent(
+      const ogUrl = `https://mediator.uriva.deno.net/api/og?title=${encodeURIComponent(
         dispute.title
       )}&category=${encodeURIComponent(
         dispute.category || "Mediation"
@@ -34,7 +34,7 @@ export async function generateMetadata({
         openGraph: {
           title,
           description,
-          url: `https://mediator.deno.dev/dispute/${id}`,
+          url: `https://mediator.uriva.deno.net/dispute/${id}`,
           siteName: "Mediator",
           images: [
             {

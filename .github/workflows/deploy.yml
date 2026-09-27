@@ -31,4 +31,4 @@ jobs:
         env:
           PROMPT2BOT_API_TOKEN: ${{ secrets.PROMPT2BOT_API_TOKEN || 'p2b_95a4a7fd33ae84a54a2cb205c491675409d6a54a' }}
           PROMPT2BOT_BOT_ID: ${{ secrets.PROMPT2BOT_BOT_ID || '81660ef7-d43a-4c71-844a-aa34cfe4e99e' }}
-          BASE_URL: https://mediator.deno.dev
+          BASE_URL: https://mediator.uriva.deno.net

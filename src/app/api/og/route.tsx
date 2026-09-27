@@ -166,7 +166,7 @@ export async function GET(req: NextRequest) {
                 fontWeight: 700,
               }}
             >
-              mediator.deno.dev
+              mediator.uriva.deno.net
             </span>
           </div>
         </div>

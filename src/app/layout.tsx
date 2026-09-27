@@ -17,7 +17,7 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mediator.deno.dev"),
+  metadataBase: new URL("https://mediator.uriva.deno.net"),
   title: {
     default: "Mediator — Serene AI Dispute Resolution",
     template: "%s | Mediator",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://mediator.deno.dev",
+    url: "https://mediator.uriva.deno.net",
     siteName: "Mediator",
     title: "Mediator — Serene AI Dispute Resolution",
     description:

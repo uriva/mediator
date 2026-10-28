@@ -52,7 +52,11 @@ interface DisputeRoomClientProps {
   disputeId: string;
 }
 
-export default function DisputeRoomClient({ disputeId }: DisputeRoomClientProps) {
+export default function DisputeRoomClient({ disputeId: rawDisputeId }: DisputeRoomClientProps) {
+  const disputeId =
+    typeof window !== "undefined" && rawDisputeId === "_"
+      ? window.location.pathname.split("/").filter(Boolean).pop() || rawDisputeId
+      : rawDisputeId;
   const { user } = useAuth();
 
   const [credentials, setCredentials] = useState<Credentials | null>(

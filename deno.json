@@ -1,38 +1,8 @@
 {
   "nodeModulesDir": "auto",
   "minimumDependencyAge": 0,
-  "deploy": {
-    "org": "uriva",
-    "app": "mediator"
+  "tasks": {
+    "build": "deno run -A scripts/buildWorker.ts",
+    "deploy": "npx wrangler deploy"
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

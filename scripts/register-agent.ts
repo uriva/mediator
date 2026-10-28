@@ -3,7 +3,7 @@ import { init } from "@instantdb/admin";
 import { BASE_MEDIATOR_PROMPT } from "../src/lib/mediator-prompt.ts";
 import { getMediatorTools } from "../src/lib/mediator-tools.ts";
 
-const baseUrl = process.env.BASE_URL || "https://mediator.uriva.deno.net";
+const baseUrl = process.env.BASE_URL || "https://mediator.uriv.me";
 const apiToken =
   process.env.PROMPT2BOT_API_TOKEN || "p2b_95a4a7fd33ae84a54a2cb205c491675409d6a54a";
 const botId =

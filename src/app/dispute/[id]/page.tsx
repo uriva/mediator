@@ -6,6 +6,10 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+export function generateStaticParams() {
+  return [{ id: "_" }];
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -22,7 +26,7 @@ export async function generateMetadata({
       const dispute = disputes[0] as any;
       const title = `Mediation: ${dispute.title}`;
       const description = `Join the impartial mediation session for "${dispute.title}". View established facts, submit evidence, and reach a peaceful accord.`;
-      const ogUrl = `https://mediator.uriva.deno.net/api/og?title=${encodeURIComponent(
+      const ogUrl = `https://mediator.uriv.me/api/og?title=${encodeURIComponent(
         dispute.title
       )}&category=${encodeURIComponent(
         dispute.category || "Mediation"
@@ -34,7 +38,7 @@ export async function generateMetadata({
         openGraph: {
           title,
           description,
-          url: `https://mediator.uriva.deno.net/dispute/${id}`,
+          url: `https://mediator.uriv.me/dispute/${id}`,
           siteName: "Mediator",
           images: [
             {

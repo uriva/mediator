@@ -26,7 +26,12 @@ interface InviteClientProps {
   inviteCode: string;
 }
 
-export default function InviteClient({ inviteCode }: InviteClientProps) {
+export default function InviteClient({ inviteCode: rawInviteCode }: InviteClientProps) {
+  const inviteCode = (
+    typeof window !== "undefined" && rawInviteCode === "_"
+      ? window.location.pathname.split("/").filter(Boolean).pop() || rawInviteCode
+      : rawInviteCode
+  ).toUpperCase();
   const router = useRouter();
   const { user } = useAuth();
 

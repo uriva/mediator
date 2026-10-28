@@ -21,11 +21,6 @@ jobs:
         with:
           deno-version: 2.9.5
 
-      - name: Deploy to Deno Deploy
-        run: deno deploy --prod --token ${{ secrets.DENO_DEPLOY_TOKEN }} --allow-node-modules
-        env:
-          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
-
       - name: Register Tools & Remote Config to Prompt2Bot
         run: deno run -A scripts/register-agent.ts
         env:

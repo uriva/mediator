@@ -4,7 +4,7 @@
     "npm:@base-ui/react@^1.8.0": "1.8.0_@types+react@19.3.0_react@19.2.8_react-dom@19.2.8",
     "npm:@instantdb/admin@^1.0.67": "1.0.67",
     "npm:@instantdb/react@^1.0.67": "1.0.67_react@19.2.8",
-    "npm:@jsr/alice-and-bot__core@^1.0.46": "1.0.46",
+    "npm:@jsr/alice-and-bot__core@^1.0.48": "1.0.48",
     "npm:@jsr/prompt2bot__client@~0.2.2": "0.2.2",
     "npm:@tailwindcss/postcss@4": "4.3.3",
     "npm:@types/canvas-confetti@^1.9.0": "1.9.0",
@@ -717,8 +717,8 @@
         "@jridgewell/sourcemap-codec"
       ]
     },
-    "@jsr/alice-and-bot__core@1.0.46": {
-      "integrity": "sha512-ic0M20Lm/cS+08ELMryu7hROqfx4g7K5N1GMZLbzl0DXbQPRd0MAxkYSQKXTbuBkzVqvZ8m7XKXVFX68JcaLKg==",
+    "@jsr/alice-and-bot__core@1.0.48": {
+      "integrity": "sha512-aDtQTxxLDxtDhSgOuA6L09XEu7Jco2NnHmfk6Drl68BBfEDUbZUUGaQbdoQz170+Gw59b7bM2yQ3XI1+3w7RmQ==",
       "dependencies": [
         "@instantdb/admin@1.0.65",
         "@instantdb/core@1.0.65",
@@ -737,7 +737,7 @@
         "safe-stable-stringify",
         "zod"
       ],
-      "tarball": "https://npm.jsr.io/~/11/@jsr/alice-and-bot__core/1.0.46.tgz"
+      "tarball": "https://npm.jsr.io/~/11/@jsr/alice-and-bot__core/1.0.48.tgz"
     },
     "@jsr/noble__hashes@2.0.0": {
       "integrity": "sha512-2Q+5bMd7rnRVMQVexpu6r5nhb+eh1WYxNj5wDxrdGebXA4NvmJ64qI5dkDDCehdcSgCvlGsX/D/pn9hcm146bA==",
@@ -763,12 +763,12 @@
       ],
       "tarball": "https://npm.jsr.io/~/11/@jsr/uri__gamla/0.0.14.tgz"
     },
-    "@jsr/uri__safescript@0.1.43": {
-      "integrity": "sha512-VN5Z67Ax5s5wOYGqQIZA/ue2yHXGcGS92rQcNrhq+9zwnkEYK40qBNOybq75FQoZQXef/93Dm07HZ4G2/DS40g==",
+    "@jsr/uri__safescript@0.1.44": {
+      "integrity": "sha512-HiArzFK/++CixyW3DoGmvrIaQWWaTmcV9y+B44VcJ/Fjr2KcqTxUeae4g6SCiH/pE8JW+W1muzG7bY0xe75AEA==",
       "dependencies": [
         "zod"
       ],
-      "tarball": "https://npm.jsr.io/~/11/@jsr/uri__safescript/0.1.43.tgz"
+      "tarball": "https://npm.jsr.io/~/11/@jsr/uri__safescript/0.1.44.tgz"
     },
     "@jsr/uri__silly-nlp@0.2.13": {
       "integrity": "sha512-iRUOBh6M+HRV7AyZA1tedPHSkuozhbKAPL3VTc5U6q+CELRRPJbHXwmtXby9s7Hs1wIVdH88fMMACgr9lFZvjQ==",
@@ -4513,7 +4513,7 @@
         "npm:@base-ui/react@^1.8.0",
         "npm:@instantdb/admin@^1.0.67",
         "npm:@instantdb/react@^1.0.67",
-        "npm:@jsr/alice-and-bot__core@^1.0.46",
+        "npm:@jsr/alice-and-bot__core@^1.0.48",
         "npm:@jsr/prompt2bot__client@~0.2.2",
         "npm:@tailwindcss/postcss@4",
         "npm:@types/canvas-confetti@^1.9.0",

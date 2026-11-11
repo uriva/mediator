@@ -12,7 +12,7 @@
     }
   ],
   "build": {
-    "command": "deno run -A scripts/buildWorker.ts"
+    "command": "deno run --node-modules-dir=manual -A scripts/buildWorker.ts"
   },
   "assets": {
     "directory": "./out",

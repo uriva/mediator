@@ -1,8 +1,8 @@
 {
-  "nodeModulesDir": "manual",
+  "nodeModulesDir": "auto",
   "minimumDependencyAge": 0,
   "tasks": {
-    "build": "deno run -A scripts/buildWorker.ts",
+    "build": "deno run --node-modules-dir=manual -A scripts/buildWorker.ts",
     "deploy": "npx wrangler deploy"
   }
 }

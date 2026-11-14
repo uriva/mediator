@@ -63,7 +63,7 @@ export const createDisputeConversation = async ({
 
   // Check if conversation already exists for this exact set
   try {
-    const existing = await getConversations(allParticipants);
+    const existing = await getConversations(allParticipants, credentials);
     if (Array.isArray(existing) && existing.length > 0) {
       return { conversationId: existing[0].id };
     }
@@ -83,7 +83,7 @@ export const createDisputeConversation = async ({
 
   // Fallback check
   try {
-    const fallback = await getConversations(allParticipants);
+    const fallback = await getConversations(allParticipants, credentials);
     if (Array.isArray(fallback) && fallback.length > 0) {
       return { conversationId: fallback[0].id };
     }

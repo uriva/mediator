@@ -6,9 +6,14 @@ const rules = {
   $users: {
     allow: {
       view: "true",
-      create: "false",
+      create: "data.email != null",
       delete: "false",
       update: "auth.id == data.id",
+    },
+    fields: {
+      email: "auth.id == data.id",
+      aliceAndBotPrivateSignKey: "auth.id == data.id",
+      aliceAndBotPrivateEncryptKey: "auth.id == data.id",
     },
   },
   disputes: {

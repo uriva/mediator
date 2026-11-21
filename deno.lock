@@ -4,7 +4,7 @@
     "npm:@base-ui/react@^1.8.0": "1.8.0_@types+react@19.3.0_react@19.2.8_react-dom@19.2.8",
     "npm:@instantdb/admin@^1.0.67": "1.0.67",
     "npm:@instantdb/react@^1.0.67": "1.0.67_react@19.2.8",
-    "npm:@jsr/alice-and-bot__core@^1.0.62": "1.0.62",
+    "npm:@jsr/alice-and-bot__core@^1.0.63": "1.0.63",
     "npm:@jsr/prompt2bot__client@~0.2.2": "0.2.2",
     "npm:@tailwindcss/postcss@4": "4.3.3",
     "npm:@types/canvas-confetti@^1.9.0": "1.9.0",
@@ -717,8 +717,8 @@
         "@jridgewell/sourcemap-codec"
       ]
     },
-    "@jsr/alice-and-bot__core@1.0.62": {
-      "integrity": "sha512-v1NCAYsrfM7Ww/kRv6e5Ljqx+2TfsqxrRYgF4rxOVbJrg9x2lha9v4Dgq2bHy6Pht77bSGfSC/5AqB4yq944WA==",
+    "@jsr/alice-and-bot__core@1.0.63": {
+      "integrity": "sha512-UIG5Ia13nku1RX6CwgyhC7j6ozss1i/bPuF0wTBI3zxhPNudmXUDxjry71xYezwSpwxDbuVJ8tDDLgGeAbQJ5g==",
       "dependencies": [
         "@instantdb/admin@1.0.65",
         "@instantdb/core@1.0.65",
@@ -737,7 +737,7 @@
         "safe-stable-stringify",
         "zod"
       ],
-      "tarball": "https://npm.jsr.io/~/11/@jsr/alice-and-bot__core/1.0.62.tgz"
+      "tarball": "https://npm.jsr.io/~/11/@jsr/alice-and-bot__core/1.0.63.tgz"
     },
     "@jsr/noble__hashes@2.0.0": {
       "integrity": "sha512-2Q+5bMd7rnRVMQVexpu6r5nhb+eh1WYxNj5wDxrdGebXA4NvmJ64qI5dkDDCehdcSgCvlGsX/D/pn9hcm146bA==",
@@ -4513,7 +4513,7 @@
         "npm:@base-ui/react@^1.8.0",
         "npm:@instantdb/admin@^1.0.67",
         "npm:@instantdb/react@^1.0.67",
-        "npm:@jsr/alice-and-bot__core@^1.0.62",
+        "npm:@jsr/alice-and-bot__core@^1.0.63",
         "npm:@jsr/prompt2bot__client@~0.2.2",
         "npm:@tailwindcss/postcss@4",
         "npm:@types/canvas-confetti@^1.9.0",

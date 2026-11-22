@@ -73,12 +73,12 @@ export function SubmitEvidenceDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-2xl p-6 sm:p-8 bg-card border-border/70 shadow-xl">
+      <DialogContent className="sm:max-w-md rounded-2xl p-6 sm:p-8 bg-card border-border/70 ">
         <DialogHeader className="space-y-1.5">
-          <div className="flex items-center gap-2 text-primary font-serif font-semibold text-sm">
+          <div className="flex items-center gap-2 text-primary font-semibold text-sm">
             <Paperclip className="w-4 h-4" /> Evidence Locker
           </div>
-          <DialogTitle className="font-serif text-2xl font-bold text-foreground">
+          <DialogTitle className="font-semibold text-2xl text-foreground">
             Submit Concrete Evidence
           </DialogTitle>
           <DialogDescription className="text-xs sm:text-sm text-muted-foreground">

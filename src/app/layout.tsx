@@ -1,29 +1,28 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Newsreader } from "next/font/google";
+import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
-const jakartaSans = Plus_Jakarta_Sans({
+const dmSans = DM_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 });
 
-const newsreader = Newsreader({
-  variable: "--font-serif",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
-  style: ["normal", "italic"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mediator.uriv.me"),
   title: {
-    default: "Mediator — Serene AI Dispute Resolution",
+    default: "Mediator — Talk it out, settle it fair",
     template: "%s | Mediator",
   },
   description:
-    "Transform conflict into harmony. An impartial, calm AI mediator that guides disputing parties into structured group dialogue, establishes undisputed facts, and achieves lasting resolution.",
+    "An impartial AI mediator that puts both sides in one room, pins down the facts you agree on, and helps you land a settlement.",
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
@@ -37,15 +36,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://mediator.uriv.me",
     siteName: "Mediator",
-    title: "Mediator — Serene AI Dispute Resolution",
+    title: "Mediator — Talk it out, settle it fair",
     description:
-      "Transform conflict into harmony. An impartial, calm AI mediator that guides disputing parties into structured group dialogue, establishes undisputed facts, and achieves lasting resolution.",
+      "An impartial AI mediator that puts both sides in one room, pins down the facts you agree on, and helps you land a settlement.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mediator — Serene AI Dispute Resolution",
+    title: "Mediator — Talk it out, settle it fair",
     description:
-      "Transform conflict into harmony. An impartial, calm AI mediator that guides disputing parties into structured group dialogue, establishes undisputed facts, and achieves lasting resolution.",
+      "An impartial AI mediator that puts both sides in one room, pins down the facts you agree on, and helps you land a settlement.",
   },
 };
 
@@ -57,9 +56,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jakartaSans.variable} ${newsreader.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         {children}
         <Toaster richColors position="top-right" />
       </body>

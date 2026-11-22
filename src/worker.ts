@@ -24,15 +24,21 @@ const escapeSvg = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 const renderOgSvg = (url: URL) => {
-  const title = escapeSvg(url.searchParams.get("title") || "Peaceful AI Mediation");
-  const category = escapeSvg(url.searchParams.get("category") || "Dispute Resolution");
-  const status = escapeSvg(url.searchParams.get("status") || "In Mediation");
+  const title = escapeSvg(url.searchParams.get("title") || "Talk it out. Settle it fair.");
+  const category = escapeSvg(url.searchParams.get("category") || "General dispute");
+  const status = escapeSvg(url.searchParams.get("status") || "In mediation");
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#F9F8F5" stroke="#F0ECE4" stroke-width="32"/>
-  <text x="90" y="120" font-family="sans-serif" font-size="28" font-weight="800" fill="#1C2923">Mediator — Serene Dispute Resolution</text>
-  <text x="90" y="230" font-family="sans-serif" font-size="16" font-weight="700" fill="#3E6353">${category} • ${status}</text>
-  <text x="90" y="320" font-family="sans-serif" font-size="52" font-weight="800" fill="#1C2923">${title.slice(0, 42)}</text>
-  <text x="90" y="540" font-family="sans-serif" font-size="22" fill="#5C7066">mediator.uriv.me</text>
+  <rect width="1200" height="630" fill="#FFFFFF"/>
+  <rect x="0.5" y="0.5" width="1199" height="629" fill="none" stroke="#E5E5E5" stroke-width="1"/>
+  <circle cx="44" cy="44" r="9" fill="#0A0A0A"/>
+  <text x="64" y="90" font-family="system-ui, sans-serif" font-size="22" font-weight="600" fill="#0A0A0A">mediator</text>
+  <text x="160" y="90" font-family="ui-monospace, monospace" font-size="14" letter-spacing="1.5" fill="#A3A3A3">/ ${status.toUpperCase()}</text>
+  <text x="1136" y="90" text-anchor="end" font-family="ui-monospace, monospace" font-size="14" letter-spacing="2" fill="#A3A3A3">${category.toUpperCase()}</text>
+  <text x="64" y="240" font-family="system-ui, sans-serif" font-size="52" font-weight="600" letter-spacing="-1" fill="#0A0A0A">${title.slice(0, 36)}</text>
+  <text x="64" y="310" font-family="system-ui, sans-serif" font-size="24" fill="#737373">Both sides. One room. Agreed facts only.</text>
+  <line x1="64" y1="500" x2="1136" y2="500" stroke="#E5E5E5" stroke-width="1"/>
+  <text x="64" y="544" font-family="system-ui, sans-serif" font-size="20" fill="#737373">No side channels · no favouritism · invite only</text>
+  <text x="1136" y="544" text-anchor="end" font-family="ui-monospace, monospace" font-size="18" letter-spacing="1" fill="#0A0A0A">mediator.uriv.me</text>
 </svg>`;
   return new Response(svg, {
     headers: { "Content-Type": "image/svg+xml; charset=utf-8" },

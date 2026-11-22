@@ -136,16 +136,14 @@ export default function DisputeRoomClient({ disputeId: rawDisputeId }: DisputeRo
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
+      <div className="flex min-h-screen flex-col bg-white dark:bg-neutral-950">
         <Navbar onOpenAuth={() => setAuthOpen(true)} />
-        <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-4">
-          <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin text-primary" />
-          <div className="text-center space-y-1">
-            <h3 className="font-serif font-bold text-lg text-foreground">
-              Entering Mediation Chamber
-            </h3>
-            <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-              Connecting to secure cryptographic records and verified ledger...
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-neutral-900 border-t-transparent dark:border-neutral-100" />
+          <div className="space-y-1 text-center">
+            <h3 className="text-sm font-semibold">Opening the room…</h3>
+            <p className="font-mono text-[11px] uppercase tracking-wider text-neutral-400">
+              loading the record
             </p>
           </div>
         </div>
@@ -155,18 +153,23 @@ export default function DisputeRoomClient({ disputeId: rawDisputeId }: DisputeRo
 
   if (!dispute) {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
+      <div className="flex min-h-screen flex-col bg-white dark:bg-neutral-950">
         <Navbar onOpenAuth={() => setAuthOpen(true)} />
-        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center mx-auto">
-            <Scale className="w-6 h-6" />
+        <div className="mx-auto flex max-w-md flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 text-neutral-400 dark:border-neutral-800">
+            <Scale className="h-5 w-5" />
           </div>
-          <h2 className="font-serif text-2xl font-bold">Dispute Not Found</h2>
-          <p className="text-xs text-muted-foreground">
-            This dispute may have been moved or the link is incorrect.
+          <h2 className="text-lg font-semibold tracking-tight">
+            Session not found
+          </h2>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            This mediation may have moved, or the link is wrong.
           </p>
-          <Link href="/" className="inline-flex items-center justify-center rounded-xl border border-border px-3.5 py-2 text-xs font-medium hover:bg-muted transition-colors">
-            Return to Home
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center rounded-full border border-neutral-200 px-4 py-2 text-xs font-medium transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900"
+          >
+            Back home
           </Link>
         </div>
       </div>
@@ -179,60 +182,50 @@ export default function DisputeRoomClient({ disputeId: rawDisputeId }: DisputeRo
   const participants = dispute.participants || [];
   const isResolved = dispute.status === "resolved";
 
+  const statusLabel = isResolved
+    ? "settled"
+    : dispute.status === "in_mediation"
+    ? "in mediation"
+    : "intake";
+
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-white text-neutral-950 dark:bg-neutral-950 dark:text-neutral-50">
       <Navbar onOpenAuth={() => setAuthOpen(true)} />
 
-      {/* Mediation Header */}
-      <div className="border-b border-border/70 bg-card/60 backdrop-blur-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+      {/* Header */}
+      <div className="border-b border-neutral-100 dark:border-neutral-900">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-4 sm:px-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3 sm:items-center">
             <Link
               href="/"
-              className="inline-flex items-center justify-center rounded-xl h-8 px-2 text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+              className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-neutral-200 text-neutral-400 transition-colors hover:text-neutral-900 dark:border-neutral-800 dark:hover:text-neutral-100"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="h-4 w-4" />
             </Link>
 
-            <div>
-              <div className="flex items-center gap-2">
-                <Badge
-                  variant="outline"
-                  className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full ${
-                    isResolved
-                      ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/30"
-                      : dispute.status === "in_mediation"
-                      ? "bg-primary/10 text-primary border-primary/30"
-                      : "bg-muted text-muted-foreground border-border"
-                  }`}
-                >
-                  {isResolved
-                    ? "Agreement Reached"
-                    : dispute.status === "in_mediation"
-                    ? "In Mediation"
-                    : "Intake"}
-                </Badge>
-
-                <span className="text-xs text-muted-foreground capitalize font-medium">
-                  {dispute.category || "General Dispute"}
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] uppercase tracking-wider text-neutral-400">
+                <span>{statusLabel}</span>
+                <span className="text-neutral-300 dark:text-neutral-700">/</span>
+                <span className="capitalize">
+                  {dispute.category || "general"}
                 </span>
               </div>
-
-              <h1 className="font-serif text-lg sm:text-xl font-bold text-foreground leading-snug">
+              <h1 className="mt-0.5 truncate text-base font-semibold tracking-tight sm:text-lg">
                 {dispute.title}
               </h1>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2">
             {isResolved && (
               <Button
                 onClick={() => setAgreementOpen(true)}
                 size="sm"
-                className="rounded-xl h-9 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs gap-1.5 shadow-2xs"
+                className="h-9 gap-1.5 rounded-full bg-neutral-900 px-4 text-xs font-medium text-white hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200"
               >
-                <Printer className="w-3.5 h-3.5" />
-                <span>View Agreement</span>
+                <Printer className="h-3.5 w-3.5" />
+                <span>Agreement</span>
               </Button>
             )}
 
@@ -240,93 +233,78 @@ export default function DisputeRoomClient({ disputeId: rawDisputeId }: DisputeRo
               onClick={() => setShareOpen(true)}
               variant="outline"
               size="sm"
-              className="rounded-xl h-9 border-border/80 text-xs font-medium gap-1.5"
+              className="h-9 gap-1.5 rounded-full border-neutral-200 px-4 text-xs font-medium dark:border-neutral-800"
             >
-              <Share2 className="w-3.5 h-3.5 text-primary" />
-              <span>Invite Party</span>
+              <Share2 className="h-3.5 w-3.5" />
+              <span>Invite</span>
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Main Chamber Layout */}
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex flex-col lg:flex-row gap-5 min-h-0">
-        {/* Left: Encrypted Group Chat with AI Mediator */}
-        <div className="w-full lg:w-[58%] flex flex-col flex-1 min-h-[520px] lg:min-h-0">
-          <div className="flex items-center justify-between pb-2 px-1">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="font-semibold text-foreground">
-                Impartial Mediation Chamber
-              </span>
-              <span>•</span>
-              <span>Encrypted via Alice & Bot</span>
+      {/* Room + record */}
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 py-5 sm:px-6 lg:flex-row">
+        {/* Chat */}
+        <div className="flex min-h-[520px] w-full flex-col lg:w-[58%]">
+          <div className="flex items-center justify-between px-1 pb-2">
+            <div className="flex items-center gap-2 text-xs">
+              <span className="h-1.5 w-1.5 rounded-full bg-neutral-900 dark:bg-neutral-100" />
+              <span className="font-medium">Mediation room</span>
             </div>
-
-            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <Users className="w-3 h-3 text-primary" />
-              <span>{participants.length} Disputants + Mediator</span>
-            </div>
+            <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+              {participants.length} parties + mediator
+            </span>
           </div>
 
           {!isAllPartiesJoined ? (
-            <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 bg-card rounded-2xl border border-border/70 text-center space-y-6 shadow-xs min-h-[460px]">
-              <div className="relative">
-                <div className="w-16 h-16 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center text-3xl mx-auto text-primary">
-                  ⚖️
-                </div>
-                <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-primary"></span>
-                </span>
+            <div className="flex min-h-[460px] flex-1 flex-col items-center justify-center gap-6 rounded-2xl border border-neutral-200 p-6 text-center dark:border-neutral-800">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 text-lg dark:border-neutral-800">
+                ⚖
               </div>
 
-              <div className="space-y-1.5 max-w-md">
-                <Badge variant="outline" className="text-[10px] font-semibold tracking-wider uppercase border-primary/30 text-primary bg-primary/5">
-                  Awaiting All Parties
-                </Badge>
-                <h3 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
-                  Mediation Begins When Both Parties Join
+              <div className="max-w-sm space-y-1.5">
+                <h3 className="text-base font-semibold tracking-tight">
+                  The room opens when both sides join
                 </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
-                  To ensure strict neutrality, the AI Mediator does not open the group chat until both parties are present in the room.
+                <p className="text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
+                  To stay neutral, the mediator doesn&apos;t start the
+                  conversation until both parties are present.
                 </p>
               </div>
 
-              {/* Room Presence Card */}
-              <div className="w-full max-w-sm p-4 rounded-xl bg-muted/40 border border-border/60 text-left space-y-2.5">
-                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
-                  Room Presence
+              <div className="w-full max-w-sm space-y-2 rounded-xl border border-neutral-200 p-3.5 text-left dark:border-neutral-800">
+                <span className="block font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+                  in the room
                 </span>
-                <div className="space-y-2 text-xs">
-                  {participants.map((p: any, idx: number) => (
-                    <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-card border border-border/60">
-                      <span className="font-semibold text-foreground">{p.name}</span>
-                      <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1 text-[11px]">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Present in Room
-                      </span>
-                    </div>
-                  ))}
-                  <div className="flex items-center justify-between p-2.5 rounded-lg border border-dashed border-border/80 text-muted-foreground bg-muted/20">
-                    <span className="italic">Counterpart / Respondent</span>
-                    <span className="text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1.5 text-[11px]">
-                      <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" /> Pending
+                {participants.map((p: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between text-xs"
+                  >
+                    <span className="font-medium">{p.name}</span>
+                    <span className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+                      <CheckCircle2 className="h-3 w-3" /> present
                     </span>
                   </div>
+                ))}
+                <div className="flex items-center justify-between border-t border-dashed border-neutral-200 pt-2 text-xs text-neutral-400 dark:border-neutral-800">
+                  <span>the other side</span>
+                  <span className="font-mono text-[10px] uppercase tracking-wider">
+                    pending
+                  </span>
                 </div>
               </div>
 
-              {/* Invite Actions */}
-              <div className="space-y-2.5 w-full max-w-sm">
+              <div className="w-full max-w-sm space-y-2">
                 <Button
                   onClick={() => setShareOpen(true)}
-                  className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-medium gap-2 shadow-xs"
+                  className="h-11 w-full gap-2 rounded-full bg-neutral-900 text-xs font-medium text-white hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200"
                 >
-                  <Share2 className="w-4 h-4" />
-                  Invite Counterpart to Room
+                  <Share2 className="h-4 w-4" />
+                  Invite the other side
                 </Button>
-                <p className="text-[11px] text-muted-foreground">
-                  The chat will automatically unlock the second they open the invite link.
+                <p className="text-[11px] text-neutral-400">
+                  The chat unlocks the second they open the link.
                 </p>
               </div>
             </div>
@@ -336,108 +314,98 @@ export default function DisputeRoomClient({ disputeId: rawDisputeId }: DisputeRo
               credentials={credentials}
             />
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 bg-card rounded-2xl border border-border/70 text-center space-y-3">
-              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <p className="text-xs text-muted-foreground">
-                Initializing encrypted multi-party session...
-              </p>
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border border-neutral-200 p-8 text-center dark:border-neutral-800">
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-900 border-t-transparent dark:border-neutral-100" />
+              <p className="text-xs text-neutral-400">Starting the room…</p>
             </div>
           )}
         </div>
 
-        {/* Right: Official Mediation Record & Live Fact Board */}
-        <div className="w-full lg:w-[42%] flex flex-col bg-card rounded-2xl border border-border/70 p-4 sm:p-5 shadow-xs overflow-hidden min-h-[460px]">
-          <div className="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
+        {/* Record */}
+        <div className="flex min-h-[460px] w-full flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white p-4 sm:p-5 dark:border-neutral-800 dark:bg-neutral-950 lg:w-[42%]">
+          <div className="mb-3 flex items-start justify-between gap-2">
             <div>
-              <h2 className="font-serif font-bold text-base text-foreground flex items-center gap-2">
-                <span>⚖️ Official Mediation Record</span>
-              </h2>
-              <p className="text-[11px] text-muted-foreground">
-                Objective facts & verified evidentiary record
+              <h2 className="text-sm font-semibold">The record</h2>
+              <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+                facts · evidence · resolution
               </p>
             </div>
-
-            <Badge
-              variant="outline"
-              className="text-xs font-semibold px-2 py-0.5 rounded-full border-primary/30 text-primary bg-primary/5"
-            >
-              {facts.length} Agreed {facts.length === 1 ? "Fact" : "Facts"}
-            </Badge>
+            <span className="shrink-0 font-mono text-[10px] text-neutral-400">
+              {facts.length} agreed
+            </span>
           </div>
 
-          <Tabs defaultValue="facts" className="flex-1 flex flex-col overflow-hidden">
-            <TabsList className="grid grid-cols-3 h-9 rounded-xl bg-muted/60 p-1 mb-3">
+          <Tabs
+            defaultValue="facts"
+            className="flex flex-1 flex-col overflow-hidden"
+          >
+            <TabsList className="mb-3 grid h-9 grid-cols-3 gap-1 rounded-full bg-neutral-100 p-1 dark:bg-neutral-900">
               <TabsTrigger
                 value="facts"
-                className="rounded-lg text-xs font-medium data-[state=active]:bg-card data-[state=active]:shadow-2xs"
+                className="rounded-full text-[11px] font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-neutral-800"
               >
-                Facts ({facts.length})
+                Facts
               </TabsTrigger>
               <TabsTrigger
                 value="evidence"
-                className="rounded-lg text-xs font-medium data-[state=active]:bg-card data-[state=active]:shadow-2xs"
+                className="rounded-full text-[11px] font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-neutral-800"
               >
-                Evidence ({evidenceItems.length})
+                Evidence
               </TabsTrigger>
               <TabsTrigger
                 value="resolution"
-                className="rounded-lg text-xs font-medium data-[state=active]:bg-card data-[state=active]:shadow-2xs"
+                className="rounded-full text-[11px] font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-neutral-800"
               >
                 Resolution
               </TabsTrigger>
             </TabsList>
 
-            {/* TAB 1: Agreed Facts */}
+            {/* Facts */}
             <TabsContent
               value="facts"
-              className="flex-1 overflow-y-auto space-y-2.5 pr-1 focus-visible:outline-hidden"
+              className="flex-1 space-y-2.5 overflow-y-auto pr-1 focus-visible:outline-hidden"
             >
-              <div className="p-3 rounded-xl bg-primary/5 border border-primary/15 text-[11px] text-foreground/80 leading-relaxed flex items-start gap-2">
-                <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2 rounded-xl bg-neutral-50 p-3 text-[11px] leading-relaxed text-neutral-500 dark:bg-neutral-900/60 dark:text-neutral-400">
+                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                 <span>
-                  The AI Mediator only records statements both parties confirm in chat, or for which concrete evidence exists.
+                  Only facts both sides confirm, or facts backed by evidence,
+                  end up here.
                 </span>
               </div>
 
               {facts.length === 0 ? (
-                <div className="py-12 px-4 text-center space-y-2 text-muted-foreground">
-                  <div className="w-10 h-10 rounded-xl bg-muted/60 flex items-center justify-center mx-auto text-primary">
-                    <CheckCircle2 className="w-5 h-5" />
-                  </div>
-                  <p className="font-serif font-bold text-sm text-foreground">
-                    Discovering Common Ground
-                  </p>
-                  <p className="text-xs max-w-xs mx-auto leading-relaxed">
-                    As both parties discuss and agree on dates, events, or amounts in the chat, the Mediator will add confirmed facts here.
+                <div className="space-y-2 px-4 py-10 text-center">
+                  <CheckCircle2 className="mx-auto h-5 w-5 text-neutral-400" />
+                  <p className="text-sm font-medium">Finding common ground</p>
+                  <p className="mx-auto max-w-xs text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
+                    As both sides agree on dates, events or amounts in the chat,
+                    confirmed facts land here.
                   </p>
                 </div>
               ) : (
                 facts.map((fact: any, idx: number) => (
                   <div
                     key={fact.id || idx}
-                    className="p-3.5 rounded-xl border border-border/70 bg-card hover:border-primary/40 transition-colors space-y-1.5 shadow-2xs"
+                    className="space-y-1.5 rounded-xl border border-neutral-200 p-3.5 dark:border-neutral-800"
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                        <span className="text-xs font-medium text-foreground leading-snug">
-                          {fact.statement}
-                        </span>
-                      </div>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-neutral-400" />
+                      <span className="text-xs font-medium leading-snug">
+                        {fact.statement}
+                      </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-[10px] text-muted-foreground pl-6 pt-1 border-t border-border/40">
-                      <Badge
-                        variant="secondary"
-                        className="text-[9px] px-1.5 py-0 rounded font-normal"
-                      >
+                    <div className="flex items-center justify-between gap-2 border-t border-neutral-100 pt-1.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400 dark:border-neutral-900">
+                      <span>
                         {fact.basis === "mutual_agreement"
-                          ? "Mutual Consensus"
-                          : "Concrete Evidence"}
-                      </Badge>
-
+                          ? "mutual agreement"
+                          : "concrete evidence"}
+                      </span>
                       {fact.evidenceDetails && (
-                        <span className="truncate max-w-[170px]" title={fact.evidenceDetails}>
+                        <span
+                          className="max-w-[170px] truncate"
+                          title={fact.evidenceDetails}
+                        >
                           {fact.evidenceDetails}
                         </span>
                       )}
@@ -447,78 +415,73 @@ export default function DisputeRoomClient({ disputeId: rawDisputeId }: DisputeRo
               )}
             </TabsContent>
 
-            {/* TAB 2: Evidence Locker */}
+            {/* Evidence */}
             <TabsContent
               value="evidence"
-              className="flex-1 overflow-y-auto space-y-2.5 pr-1 focus-visible:outline-hidden"
+              className="flex-1 space-y-2.5 overflow-y-auto pr-1 focus-visible:outline-hidden"
             >
               <div className="flex items-center justify-between pb-1">
-                <span className="text-xs font-medium text-muted-foreground">
-                  Submitted documents & verifiable proof
+                <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+                  documents & proof
                 </span>
                 <Button
                   size="sm"
                   onClick={() => setEvidenceOpen(true)}
-                  className="h-8 px-2.5 rounded-lg text-xs bg-primary hover:bg-primary/90 text-primary-foreground gap-1"
+                  className="h-8 gap-1 rounded-full bg-neutral-900 px-3.5 text-xs font-medium text-white hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200"
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  Add Evidence
+                  <Plus className="h-3.5 w-3.5" />
+                  Add
                 </Button>
               </div>
 
               {evidenceItems.length === 0 ? (
-                <div className="py-12 px-4 text-center space-y-2 text-muted-foreground">
-                  <div className="w-10 h-10 rounded-xl bg-muted/60 flex items-center justify-center mx-auto text-primary">
-                    <Paperclip className="w-5 h-5" />
-                  </div>
-                  <p className="font-serif font-bold text-sm text-foreground">
-                    Evidence Locker is Empty
-                  </p>
-                  <p className="text-xs max-w-xs mx-auto leading-relaxed">
-                    Upload receipt dates, contract agreements, photos, or bank statements to help substantiate disputed facts.
+                <div className="space-y-3 px-4 py-10 text-center">
+                  <Paperclip className="mx-auto h-5 w-5 text-neutral-400" />
+                  <p className="text-sm font-medium">Nothing filed yet</p>
+                  <p className="mx-auto max-w-xs text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
+                    Drop in receipts, contracts, photos or statements to back up
+                    a disputed fact.
                   </p>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setEvidenceOpen(true)}
-                    className="rounded-xl text-xs mt-2"
+                    className="mt-1 rounded-full border-neutral-200 text-xs font-medium dark:border-neutral-800"
                   >
-                    Submit First Item
+                    Submit first item
                   </Button>
                 </div>
               ) : (
                 evidenceItems.map((item: any, idx: number) => (
                   <div
                     key={item.id || idx}
-                    className="p-3.5 rounded-xl border border-border/70 bg-card space-y-1.5 shadow-2xs"
+                    className="space-y-1.5 rounded-xl border border-neutral-200 p-3.5 dark:border-neutral-800"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <Paperclip className="w-4 h-4 text-primary shrink-0" />
-                        <h4 className="font-semibold text-xs text-foreground">
-                          {item.title}
-                        </h4>
+                        <Paperclip className="h-3.5 w-3.5 shrink-0 text-neutral-400" />
+                        <h4 className="text-xs font-semibold">{item.title}</h4>
                       </div>
-                      <span className="text-[10px] text-muted-foreground">
-                        by {item.submittedBy}
+                      <span className="font-mono text-[10px] text-neutral-400">
+                        {item.submittedBy}
                       </span>
                     </div>
 
                     {item.description && (
-                      <p className="text-xs text-muted-foreground pl-6 leading-relaxed">
+                      <p className="pl-5.5 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
                         {item.description}
                       </p>
                     )}
 
                     {item.fileUrl && (
-                      <div className="pl-6 pt-1">
+                      <div className="pl-5.5 pt-0.5">
                         <a
                           href={item.fileUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[11px] text-primary hover:underline inline-flex items-center gap-1 font-medium"
+                          className="inline-flex items-center gap-1 text-[11px] font-medium underline underline-offset-4"
                         >
-                          View Document <ExternalLink className="w-3 h-3" />
+                          Open document <ExternalLink className="h-3 w-3" />
                         </a>
                       </div>
                     )}
@@ -527,62 +490,57 @@ export default function DisputeRoomClient({ disputeId: rawDisputeId }: DisputeRo
               )}
             </TabsContent>
 
-            {/* TAB 3: Resolution & Proposals */}
+            {/* Resolution */}
             <TabsContent
               value="resolution"
-              className="flex-1 overflow-y-auto space-y-3 pr-1 focus-visible:outline-hidden"
+              className="flex-1 space-y-3 overflow-y-auto pr-1 focus-visible:outline-hidden"
             >
               {isResolved ? (
-                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-3">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-700 flex items-center justify-center mx-auto">
-                    <CheckCircle2 className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-serif font-bold text-base text-foreground">
-                      Dispute Concluded
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      A mutual accord has been reached and formalized.
+                <div className="space-y-3 rounded-xl border border-neutral-200 p-4 text-center dark:border-neutral-800">
+                  <CheckCircle2 className="mx-auto h-5 w-5 text-neutral-400" />
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-semibold">Settled</h3>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                      Both sides reached and signed an agreement.
                     </p>
                   </div>
                   <Button
                     onClick={() => setAgreementOpen(true)}
-                    className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium gap-1.5"
+                    className="w-full gap-1.5 rounded-full bg-neutral-900 text-xs font-medium text-white hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200"
                   >
-                    <Printer className="w-3.5 h-3.5" />
-                    View & Print Official Agreement
+                    <Printer className="h-3.5 w-3.5" />
+                    View &amp; print agreement
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <div className="p-3.5 rounded-xl bg-muted/30 border border-border/60 text-xs text-muted-foreground space-y-1">
-                    <span className="font-semibold text-foreground block">
-                      Mediation in Progress
-                    </span>
-                    <p>
-                      Once the AI Mediator finishes gathering facts and exploring both perspectives, it will present structured compromise proposals here.
+                  <div className="space-y-1 rounded-xl bg-neutral-50 p-3.5 text-xs leading-relaxed dark:bg-neutral-900/60">
+                    <span className="block font-medium">Mediation in progress</span>
+                    <p className="text-neutral-500 dark:text-neutral-400">
+                      Once the mediator has the facts and both perspectives, it
+                      proposes settlement options right here.
                     </p>
                   </div>
 
                   {proposals.length > 0 && (
                     <div className="space-y-2">
-                      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
-                        Proposed Settlement Options
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+                        proposed options
                       </span>
                       {proposals.map((pr: any, idx: number) => (
                         <div
                           key={pr.id || idx}
-                          className="p-3.5 rounded-xl border border-primary/20 bg-primary/5 space-y-2"
+                          className="space-y-1.5 rounded-xl border border-neutral-200 p-3.5 dark:border-neutral-800"
                         >
-                          <div className="flex items-center justify-between">
-                            <span className="font-semibold text-xs text-primary">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-semibold">
                               {pr.title}
                             </span>
-                            <Badge variant="outline" className="text-[9px] uppercase">
+                            <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
                               {pr.status}
-                            </Badge>
+                            </span>
                           </div>
-                          <p className="text-xs whitespace-pre-wrap text-foreground/80 leading-relaxed">
+                          <p className="whitespace-pre-wrap text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
                             {pr.terms}
                           </p>
                         </div>
@@ -596,7 +554,6 @@ export default function DisputeRoomClient({ disputeId: rawDisputeId }: DisputeRo
         </div>
       </div>
 
-      {/* Dialogs */}
       <ShareDialog
         open={shareOpen}
         onOpenChange={setShareOpen}

@@ -66,9 +66,9 @@ export function SettlementAgreementModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl rounded-2xl p-6 sm:p-10 bg-card border-border/80 shadow-2xl max-h-[90vh] overflow-y-auto print:border-none print:shadow-none print:max-h-none print:p-0">
+      <DialogContent className="sm:max-w-2xl rounded-2xl p-6 sm:p-10 bg-card border-border/80 max-h-[90vh] overflow-y-auto print:border-none print:shadow-none print:max-h-none print:p-0">
         <DialogHeader className="border-b border-border/60 pb-6 space-y-2 text-center">
-          <div className="mx-auto w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 mb-2">
+          <div className="mx-auto w-12 h-12 rounded-2xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-900 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-100 mb-2">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <span className="text-xs uppercase tracking-widest text-primary font-bold">
@@ -88,7 +88,7 @@ export function SettlementAgreementModal({
             <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
               Matter In Controversy
             </span>
-            <p className="font-serif font-bold text-base text-foreground">
+            <p className="font-semibold text-base text-foreground">
               {dispute.title}
             </p>
             <p className="text-xs text-muted-foreground">{dispute.description}</p>
@@ -96,7 +96,7 @@ export function SettlementAgreementModal({
 
           {/* Participating Parties */}
           <div>
-            <h4 className="font-serif font-bold text-sm text-foreground uppercase tracking-wide mb-2 flex items-center gap-2">
+            <h4 className="font-semibold text-sm text-foreground uppercase tracking-wide mb-2 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               1. Disputing Parties
             </h4>
@@ -117,7 +117,7 @@ export function SettlementAgreementModal({
 
           {/* Established Agreed Facts */}
           <div>
-            <h4 className="font-serif font-bold text-sm text-foreground uppercase tracking-wide mb-2 flex items-center gap-2">
+            <h4 className="font-semibold text-sm text-foreground uppercase tracking-wide mb-2 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               2. Confirmed Factual Foundation
             </h4>
@@ -150,7 +150,7 @@ export function SettlementAgreementModal({
 
           {/* Terms of Settlement */}
           <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
-            <h4 className="font-serif font-bold text-base text-primary uppercase tracking-wide">
+            <h4 className="font-semibold text-base text-primary uppercase tracking-wide">
               3. Agreed Terms of Settlement
             </h4>
             <p className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed text-foreground/90">

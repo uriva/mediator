@@ -49,10 +49,11 @@ export default function AliceChat({
       conversationId,
       credentials,
       darkModeOverride: isDark,
+      emptyMessage: "Say your piece — the mediator is listening.",
       customColors: {
-        primary: isDark ? "#74ab93" : "#3e6353",
-        background: isDark ? "#1c2420" : "#ffffff",
-        text: isDark ? "#ece9e2" : "#222926",
+        primary: isDark ? "#fafafa" : "#0a0a0a",
+        background: isDark ? "#0a0a0a" : "#ffffff",
+        text: isDark ? "#fafafa" : "#0a0a0a",
         hideTitle: true,
         chatMaxWidth: "100%",
         inputMaxWidth: "100%",
@@ -69,20 +70,20 @@ export default function AliceChat({
 
   if (error) {
     return (
-      <div className="p-8 text-center text-sm text-destructive bg-destructive/10 rounded-2xl border border-destructive/20">
-        <p className="font-medium">Could not load the secure mediation chat.</p>
-        <p className="text-xs text-muted-foreground mt-1">{error}</p>
+      <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center text-sm dark:border-neutral-800 dark:bg-neutral-950">
+        <p className="font-medium">Couldn’t open the room.</p>
+        <p className="mt-1 text-xs text-neutral-400">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full h-full flex flex-col flex-1 min-h-[460px] rounded-2xl overflow-hidden bg-card border border-border/70 shadow-xs">
+    <div className="relative flex h-full min-h-[460px] w-full flex-1 flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
       {!ready && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-card/80 backdrop-blur-xs text-muted-foreground z-10">
-          <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-medium tracking-wide">
-            Connecting to encrypted mediation room...
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/90 text-neutral-400 backdrop-blur-xs dark:bg-neutral-950/90">
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-900 border-t-transparent dark:border-neutral-100" />
+          <span className="font-mono text-[10px] uppercase tracking-wider">
+            connecting
           </span>
         </div>
       )}

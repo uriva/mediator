@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-serif: var(--font-serif);
-  --font-mono: var(--font-mono);
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -26,69 +26,71 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.4);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
 }
 
 :root {
-  /* Serene Light Palette: Warm linen, river stone, sage foliage */
-  --background: oklch(0.985 0.008 85);
-  --foreground: oklch(0.24 0.02 155);
-  --card: oklch(0.998 0.003 85);
-  --card-foreground: oklch(0.24 0.02 155);
-  --popover: oklch(0.998 0.003 85);
-  --popover-foreground: oklch(0.24 0.02 155);
-  --primary: oklch(0.48 0.08 152);
-  --primary-foreground: oklch(0.99 0.005 85);
-  --secondary: oklch(0.945 0.014 90);
-  --secondary-foreground: oklch(0.28 0.03 150);
-  --muted: oklch(0.955 0.009 90);
-  --muted-foreground: oklch(0.52 0.02 140);
-  --accent: oklch(0.935 0.025 148);
-  --accent-foreground: oklch(0.28 0.05 150);
-  --destructive: oklch(0.58 0.16 28);
-  --border: oklch(0.91 0.012 90);
-  --input: oklch(0.91 0.012 90);
-  --ring: oklch(0.52 0.08 152);
-  --radius: 0.875rem;
+  --radius: 1rem;
+  /* Paper white, ink black — matching the Crush design language */
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+  --primary: #0a0a0a;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #171717;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --accent: #f5f5f5;
+  --accent-foreground: #0a0a0a;
+  --destructive: #dc2626;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #0a0a0a;
 }
 
 .dark {
-  /* Serene Dark Palette: Deep pine slate, moonlit sage, warm ivory */
-  --background: oklch(0.18 0.015 155);
-  --foreground: oklch(0.94 0.01 90);
-  --card: oklch(0.215 0.018 155);
-  --card-foreground: oklch(0.94 0.01 90);
-  --popover: oklch(0.215 0.018 155);
-  --popover-foreground: oklch(0.94 0.01 90);
-  --primary: oklch(0.74 0.08 148);
-  --primary-foreground: oklch(0.16 0.02 155);
-  --secondary: oklch(0.27 0.02 150);
-  --secondary-foreground: oklch(0.92 0.01 90);
-  --muted: oklch(0.25 0.015 150);
-  --muted-foreground: oklch(0.68 0.02 140);
-  --accent: oklch(0.28 0.03 150);
-  --accent-foreground: oklch(0.95 0.01 90);
-  --destructive: oklch(0.65 0.16 28);
-  --border: oklch(0.30 0.015 155 / 60%);
-  --input: oklch(0.30 0.015 155 / 60%);
-  --ring: oklch(0.74 0.08 148);
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #0a0a0a;
+  --card-foreground: #fafafa;
+  --popover: #0a0a0a;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #0a0a0a;
+  --secondary: #171717;
+  --secondary-foreground: #fafafa;
+  --muted: #171717;
+  --muted-foreground: #a3a3a3;
+  --accent: #171717;
+  --accent-foreground: #fafafa;
+  --destructive: #ef4444;
+  --border: #262626;
+  --input: #262626;
+  --ring: #fafafa;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
   body {
-    @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
+    @apply bg-background text-foreground antialiased;
   }
 }
 
-/* Custom serene subtle scrollbars */
+/* Subtle neutral scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -97,9 +99,9 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.5 0.02 140 / 25%);
+  background: rgb(163 163 163 / 30%);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.5 0.02 140 / 45%);
+  background: rgb(163 163 163 / 50%);
 }

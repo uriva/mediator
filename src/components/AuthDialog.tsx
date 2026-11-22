@@ -70,12 +70,12 @@ export function AuthDialog({ open, onOpenChange, onSuccess }: AuthDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-2xl p-6 sm:p-8 bg-card border-border/70 shadow-lg">
+      <DialogContent className="sm:max-w-md rounded-2xl p-6 sm:p-8 bg-card border-border/70 ">
         <DialogHeader className="space-y-2 text-center items-center">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-1">
             <span className="text-2xl">🕊️</span>
           </div>
-          <DialogTitle className="font-serif text-2xl font-bold text-foreground">
+          <DialogTitle className="font-semibold text-2xl text-foreground">
             {step === "email" ? "Enter the Mediation Space" : "Check Your Inbox"}
           </DialogTitle>
           <DialogDescription className="text-xs sm:text-sm text-muted-foreground max-w-xs mx-auto">

@@ -80,12 +80,12 @@ export function ShareDialog({ open, onOpenChange, dispute }: ShareDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-2xl p-6 sm:p-8 bg-card border-border/70 shadow-xl">
+      <DialogContent className="sm:max-w-md rounded-2xl p-6 sm:p-8 bg-card border-border/70 ">
         <DialogHeader className="space-y-1.5 text-center items-center">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-1">
             <Share2 className="w-6 h-6" />
           </div>
-          <DialogTitle className="font-serif text-2xl font-bold text-foreground">
+          <DialogTitle className="font-semibold text-2xl text-foreground">
             Invite Participant
           </DialogTitle>
           <DialogDescription className="text-xs sm:text-sm text-muted-foreground max-w-xs mx-auto">
@@ -127,7 +127,7 @@ export function ShareDialog({ open, onOpenChange, dispute }: ShareDialogProps) {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 h-10 rounded-xl border border-border/70 hover:bg-secondary/60 text-xs font-medium text-foreground transition-colors"
               >
-                <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+                <MessageSquare className="w-3.5 h-3.5 text-neutral-500" />
                 WhatsApp
               </a>
               <a

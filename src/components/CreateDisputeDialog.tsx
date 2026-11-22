@@ -114,9 +114,9 @@ export function CreateDisputeDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-2xl p-6 sm:p-7 bg-card border-border/70 shadow-xl">
+      <DialogContent className="sm:max-w-md rounded-2xl p-6 sm:p-7 bg-card border-border/70 ">
         <DialogHeader className="space-y-1">
-          <DialogTitle className="font-serif text-2xl font-bold text-foreground">
+          <DialogTitle className="font-semibold text-2xl text-foreground">
             Initiate a Mediation
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
@@ -132,7 +132,7 @@ export function CreateDisputeDialog({
               </div>
             </div>
             <div className="space-y-1.5 max-w-xs mx-auto">
-              <h3 className="font-serif font-bold text-lg text-foreground">
+              <h3 className="font-semibold text-lg text-foreground">
                 Setting Up Neutral Chamber
               </h3>
               <p className="text-xs text-primary font-medium animate-pulse">

@@ -45,7 +45,9 @@ export interface DisputeContext {
   resolutionSummary?: string;
 }
 
-export const buildDynamicMediatorPrompt = (context: DisputeContext): string => {
+export const buildMediatorConversationContext = (
+  context: DisputeContext,
+): string => {
   const participantsList = context.participants
     .map((p) => `- ${p.name} (${p.role})`)
     .join("\n");
@@ -84,10 +86,7 @@ export const buildDynamicMediatorPrompt = (context: DisputeContext): string => {
           .join("\n")
       : "(No active settlement proposals yet)";
 
-  return `${BASE_MEDIATOR_PROMPT}
-
----
-### ACTIVE DISPUTE CONTEXT
+  return `### ACTIVE DISPUTE CONTEXT
 - Dispute ID: ${context.disputeId}
 - Title: ${context.title}
 - Background Summary: ${context.description}

@@ -3,8 +3,7 @@ import { createHmac } from "crypto";
 import { adminDb, id } from "@/lib/instant-admin";
 import { TOOL_NAMES } from "@/lib/mediator-tools";
 import {
-  BASE_MEDIATOR_PROMPT,
-  buildDynamicMediatorPrompt,
+  buildMediatorConversationContext,
   type DisputeContext,
 } from "@/lib/mediator-prompt";
 
@@ -93,7 +92,6 @@ export async function POST(
 
       if (!convId) {
         return NextResponse.json({
-          prompt: BASE_MEDIATOR_PROMPT,
           timezoneIANA: "UTC",
         });
       }
@@ -112,7 +110,8 @@ export async function POST(
       if (!disputes || disputes.length === 0) {
         // Fallback: check if any dispute is in intake
         return NextResponse.json({
-          prompt: `${BASE_MEDIATOR_PROMPT}\n\nNote: Active mediation session initializing. Ask the parties for their names and an overview of their dispute.`,
+          conversationContext:
+            "Note: Active mediation session initializing. Ask the parties for their names and an overview of their dispute.",
           timezoneIANA: "UTC",
         });
       }
@@ -154,9 +153,9 @@ export async function POST(
         resolutionSummary: dispute.resolutionSummary,
       };
 
-      const prompt = buildDynamicMediatorPrompt(context);
+      const conversationContext = buildMediatorConversationContext(context);
       return NextResponse.json({
-        prompt,
+        conversationContext,
         timezoneIANA: "UTC",
       });
     }

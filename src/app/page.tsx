@@ -230,8 +230,22 @@ export default function HomePage() {
       </main>
 
       <footer className="mx-auto flex w-full max-w-xl flex-wrap items-center justify-between gap-3 px-6 pb-8 text-xs text-neutral-400">
-        <span>Private rooms · invite only · no accounts needed</span>
-        <span className="font-mono text-[11px]">mediator.uriv.me</span>
+        <span>Private rooms · invite only · not legal advice</span>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/privacy"
+            className="transition-colors hover:text-neutral-700 dark:hover:text-neutral-200"
+          >
+            Privacy
+          </Link>
+          <Link
+            href="/terms"
+            className="transition-colors hover:text-neutral-700 dark:hover:text-neutral-200"
+          >
+            Terms
+          </Link>
+          <span className="font-mono text-[11px]">mediator.uriv.me</span>
+        </div>
       </footer>
 
       <CreateDisputeDialog open={createOpen} onOpenChange={setCreateOpen} />
